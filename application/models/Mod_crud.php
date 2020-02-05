@@ -5,57 +5,54 @@ class Mod_crud extends CI_Model {
 
 	function getData($type = null, $select, $table, $limit = null, $offset = null, $joins = null, $where = null, $group = null, $order = null, $like = null)
 	{
-		if($type == 'result_array'){
-			$data = $this->db->get_where($table,$where);
-			return $data->result_object();
-		}else{
-			$command = "SELECT $select FROM $table";
-			if ($joins != null)
-				{	
-					foreach($joins as $key => $values)
-					{
-						$command .= " LEFT JOIN $key ON $values ";
-					}
-				}
-				
-			if ($where != null)
-				{	
-					$command .= ' WHERE '.implode(' AND ',$where);
-				}
 
-			if ($like != null AND $where == null)
+		$command = "SELECT $select FROM $table";
+		if ($joins != null)
+			{	
+				foreach($joins as $key => $values)
 				{
-					$command .= ' WHERE '.$like;
-				}elseif ($like != null AND $where != null) {
-					$command .= ' AND '.'('.$like.')';
+					$command .= " LEFT JOIN $key ON $values ";
 				}
-
-			if ($group != null)
-				{	
-					$command .= ' GROUP BY '.implode(', ',$group);
-				}
-
-			if ($order != null)
-				{	
-					$command .= ' ORDER BY '.implode(', ',$order);
-				}
-			if ($limit != null)
-				{
-					if ($offset != null)
-						{
-							$command .= " LIMIT $offset, $limit";
-						}else{
-							$command .= " LIMIT $limit";
-						}	
-				}
-			$data = $this->db->query($command);
-			if ($data->num_rows() > 0)
-			{
-				return  ($type == 'result') ? $data->result() : $data->row();
-			}else{
-				return false;
 			}
+			
+		if ($where != null)
+			{	
+				$command .= ' WHERE '.implode(' AND ',$where);
+			}
+
+		if ($like != null AND $where == null)
+			{
+				$command .= ' WHERE '.$like;
+			}elseif ($like != null AND $where != null) {
+				$command .= ' AND '.'('.$like.')';
+			}
+
+		if ($group != null)
+			{	
+				$command .= ' GROUP BY '.implode(', ',$group);
+			}
+
+		if ($order != null)
+			{	
+				$command .= ' ORDER BY '.implode(', ',$order);
+			}
+		if ($limit != null)
+			{
+				if ($offset != null)
+					{
+						$command .= " LIMIT $offset, $limit";
+					}else{
+						$command .= " LIMIT $limit";
+					}	
+			}
+		$data = $this->db->query($command);
+		if ($data->num_rows() > 0)
+		{
+			return  ($type == 'result') ? $data->result() : $data->row();
+		}else{
+			return false;
 		}
+		
 	}
 
 	function qry($type = null, $command)
@@ -202,6 +199,9 @@ class Mod_crud extends CI_Model {
 	}	
 
 
+
+
+	// this model datatables
 	var $column_order = array(null, 'nama','buy'); //set column field database for datatable orderable
 	var $column_search = array('nama','nama'); //set column field database for datatable searchable 
 	var $order = array('id' => 'asc'); // default order 
